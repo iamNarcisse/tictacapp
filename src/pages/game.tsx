@@ -3,6 +3,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import GameMode from "@/components/GameMode";
 import { useApp } from "@/provider/app";
+import OnlineGameOptions from "@/components/OnlineOption";
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -11,6 +12,7 @@ export default function Game() {
   const currentSquares = history[currentMove];
 
   const { gameMode } = useApp();
+
   function handlePlay(nextSquares: any) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
@@ -35,7 +37,9 @@ export default function Game() {
               squares={currentSquares}
               onPlay={handlePlay}
             />
-          ) : null}
+          ) : (
+            <OnlineGameOptions />
+          )}
         </>
       )}
     </Box>
