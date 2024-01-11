@@ -1,3 +1,4 @@
+import RootProvider from "@/provider/root";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
@@ -16,7 +17,9 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: ${roboto.style.fontFamily};
         }
       `}</style>
-      <Component {...pageProps} />
+      <RootProvider {...pageProps}>
+        <Component {...pageProps} />
+      </RootProvider>
     </>
   );
 }

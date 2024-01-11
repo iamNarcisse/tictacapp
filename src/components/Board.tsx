@@ -52,7 +52,19 @@ const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay }) => {
 
   return (
     <Box>
-      {/* <div className="status">{status}</div> */}
+      <Box
+        // border={"1px solid red"}
+        display={"flex"}
+        textAlign={"center"}
+        flexDirection={"row"}
+        className="status"
+        justifyContent={"center"}
+        py={"1rem"}
+        my={"1rem"}
+        fontSize={"2rem"}
+      >
+        {status}
+      </Box>
       <Box flexDirection={"row"} display={"flex"}>
         <Square value={squares[0]} onClick={() => handleClick(0)} />
         <Square value={squares[1]} onClick={() => handleClick(1)} />

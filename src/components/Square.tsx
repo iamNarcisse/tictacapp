@@ -4,25 +4,26 @@ import Box from "@mui/material/Box";
 type SquareProps = {
   value: string | null;
   onClick: () => void;
+  isSelf?: boolean;
 };
 
-const Square: React.FC<SquareProps> = ({ value, onClick }) => {
+const Square: React.FC<SquareProps> = ({ value, onClick, isSelf }) => {
   return (
     <Box
-      width={"6rem"}
+      width={"7rem"}
       display={"flex"}
       flexDirection={"row"}
       justifyContent={"center"}
       alignItems={"center"}
-      height={"6rem"}
+      height={"7rem"}
       onClick={onClick}
       component={Button}
       borderRadius={"0.5rem"}
       fontWeight={"bold"}
-      color={"white"}
+      color={isSelf ? "#2de7ba" : "white"}
       border={"1px solid #2de7ba"}
       margin={"0.5rem"}
-      fontSize={"1.5rem"}
+      fontSize={"2.5rem"}
     >
       {value}
     </Box>
