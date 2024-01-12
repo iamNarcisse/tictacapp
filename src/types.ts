@@ -7,4 +7,5 @@ export type Move = {
   nextHistory: Array<string>[];
   timeOfMove: number; // timestamp
   socketID?: string;
+  currentPlayerID?: string;
 };
