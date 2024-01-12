@@ -74,8 +74,29 @@ const OnlineBoard: React.FC = () => {
       const payload = {
         room,
       };
+
+      const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/board/join`;
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          socketID: socket.id,
+          room,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const resource = await response.json();
+
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(resource.message);
+      }
+
+      console.log(resource, "resource AM HERE ==>");
       socket.emit("joinRoom", payload);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error, "REQUEST ERROR");
+    }
   };
 
   function onRoomieJoined(doc: any) {
