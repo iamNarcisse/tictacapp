@@ -1,11 +1,11 @@
 import useSocket from "@/hooks/socket";
 import { useApp } from "@/provider/app";
-import { useEffect, useRef, useState } from "react";
-import Board, { OBoard } from "./Board";
+import { Move } from "@/types";
 import Box from "@mui/material/Box";
+import { useEffect, useRef, useState } from "react";
+import { OBoard } from "./Board";
 import InviteModal, { IModalRef } from "./InviteModal";
 import JoinModal, { IJoinModalRef } from "./JoinModal";
-import { Move } from "@/types";
 
 const OnlineBoard: React.FC = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
