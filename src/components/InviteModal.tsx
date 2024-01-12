@@ -1,7 +1,14 @@
-import { forwardRef, memo, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  memo,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
 
 export interface IModalRef {
   open: () => void;
@@ -10,6 +17,9 @@ export interface IModalRef {
 
 interface InviteModalProps {
   onChange?: () => void;
+  onInvite?: () => void;
+  joinStatus?: string;
+  room?: string;
 }
 
 const style = {
@@ -25,11 +35,11 @@ const style = {
 };
 
 const InviteModal = forwardRef<IModalRef, InviteModalProps>(
-  ({ onChange }, ref) => {
+  ({ onChange, onInvite, joinStatus, room }, ref) => {
     const [open, setOpen] = useState(false);
-
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
     useImperativeHandle(
       ref,
       () => ({
@@ -39,30 +49,61 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
       []
     );
 
+    useEffect(() => {
+      if (!joinStatus) {
+        onInvite?.();
+      }
+    }, []);
+
     return (
       <Modal
         open={open}
-        onClose={handleClose}
+        // onClose={() => {}}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            textAlign={"center"}
-            color={"black"}
-            variant="h6"
-            component="h2"
-          >
-            Share this code or link with your friend.
-          </Typography>
-          <Typography
-            fontSize={"2rem"}
-            color={"black"}
-            sx={{ mt: 2 }}
-            textAlign={"center"}
-          >
-            4949494y
-          </Typography>
+          {!joinStatus ? (
+            <Box
+              alignContent={"center"}
+              justifyContent={"center"}
+              display={"flex"}
+              flexDirection={"column"}
+            >
+              <Typography
+                textAlign={"center"}
+                color={"black"}
+                variant="h6"
+                component="h2"
+              >
+                Connecting....
+              </Typography>
+              <Button onClick={handleClose} sx={{ marginTop: "1rem" }}>
+                Cancel
+              </Button>
+            </Box>
+          ) : null}
+
+          {joinStatus === "waiting" ? (
+            <Box>
+              <Typography
+                textAlign={"center"}
+                color={"black"}
+                variant="h6"
+                component="h2"
+              >
+                Share this code or link with your friend.
+              </Typography>
+              <Typography
+                fontSize={"2rem"}
+                color={"black"}
+                sx={{ mt: 2 }}
+                textAlign={"center"}
+              >
+                {room}
+              </Typography>
+            </Box>
+          ) : null}
         </Box>
       </Modal>
     );

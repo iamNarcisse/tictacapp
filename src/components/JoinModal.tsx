@@ -1,9 +1,9 @@
-import { forwardRef, memo, useImperativeHandle, useState } from "react";
+import { Button, SxProps } from "@mui/material";
+import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import { MuiOtpInput } from "mui-one-time-password-input";
-import { Button, Stack, SxProps } from "@mui/material";
+import { forwardRef, memo, useImperativeHandle, useState } from "react";
 
 export interface IJoinModalRef {
   open: () => void;
@@ -12,6 +12,8 @@ export interface IJoinModalRef {
 
 interface JoinModalProps {
   onChange?: () => void;
+  onJoin?: (room: string) => void;
+  status?: string;
 }
 
 const style: SxProps = {
@@ -28,7 +30,7 @@ const style: SxProps = {
 };
 
 const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
-  ({ onChange }, ref) => {
+  ({ onChange, onJoin, status }, ref) => {
     const [open, setOpen] = useState(false);
     const [otp, setOtp] = useState("");
     const handleOpen = () => setOpen(true);
@@ -46,6 +48,8 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
       }),
       []
     );
+
+    if (status === "joined") return null;
 
     return (
       <Modal
@@ -69,7 +73,7 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             sx={{ mt: 2 }}
             textAlign={"center"}
           >
-            <MuiOtpInput value={otp} onChange={handleChange} />
+            <MuiOtpInput value={otp} length={6} onChange={handleChange} />
           </Typography>
 
           <Box
@@ -78,7 +82,14 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Button>Join Game</Button>
+            <Button
+              disabled={otp.length !== 6}
+              onClick={() => {
+                onJoin?.(otp);
+              }}
+            >
+              Join Game
+            </Button>
           </Box>
         </Box>
       </Modal>
