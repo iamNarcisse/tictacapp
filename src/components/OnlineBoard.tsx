@@ -153,6 +153,11 @@ const OnlineBoard: React.FC = () => {
     onSetOption(undefined);
   };
 
+  const onCancel = () => {
+    onSetGameMode(undefined);
+    onSetOption(undefined);
+  };
+
   useEffect(() => {
     connect();
     init();
@@ -197,8 +202,14 @@ const OnlineBoard: React.FC = () => {
         onInvite={onInvite}
         ref={inviteModalRef}
         room={room}
+        onCancel={onCancel}
       />
-      <JoinModal ref={joinModalRef} status={status} onJoin={onJoin} />
+      <JoinModal
+        ref={joinModalRef}
+        status={status}
+        onJoin={onJoin}
+        onCancel={onCancel}
+      />
     </Box>
   );
 };

@@ -8,7 +8,7 @@ import {
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import { Button, SxProps } from "@mui/material";
 
 export interface IModalRef {
   open: () => void;
@@ -20,25 +20,32 @@ interface InviteModalProps {
   onInvite?: () => void;
   joinStatus?: string;
   room?: string;
+  onCancel?: () => void;
 }
 
-const style = {
+const style: SxProps = {
   position: "absolute" as "absolute",
-  top: "50%",
+  top: "30%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
+  borderRadius: "0.5rem",
   p: 4,
 };
 
 const InviteModal = forwardRef<IModalRef, InviteModalProps>(
-  ({ onChange, onInvite, joinStatus, room }, ref) => {
+  ({ onChange, onInvite, joinStatus, room, onCancel }, ref) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const handleCancel = () => {
+      onCancel?.();
+      handleClose();
+    };
 
     useImperativeHandle(
       ref,
@@ -54,6 +61,17 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
         onInvite?.();
       }
     }, []);
+
+    const copyToClipBoard = async (copyMe?: string) => {
+      if (!copyMe) {
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(copyMe);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
     return (
       <Modal
@@ -78,30 +96,46 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
               >
                 Connecting....
               </Typography>
-              <Button onClick={handleClose} sx={{ marginTop: "1rem" }}>
+              <Button onClick={handleCancel} sx={{ marginTop: "1rem" }}>
                 Cancel
               </Button>
             </Box>
           ) : null}
 
           {joinStatus === "waiting" ? (
-            <Box>
+            <Box
+              alignContent={"center"}
+              justifyContent={"center"}
+              display={"flex"}
+              flexDirection={"column"}
+            >
               <Typography
                 textAlign={"center"}
                 color={"black"}
                 variant="h6"
                 component="h2"
               >
-                Share this code or link with your friend.
+                Share this code
               </Typography>
+
               <Typography
                 fontSize={"2rem"}
                 color={"black"}
-                sx={{ mt: 2 }}
+                sx={{ mt: 2, cursor: "pointer" }}
                 textAlign={"center"}
+                fontWeight={"bold"}
+                onClick={() => copyToClipBoard(room)}
               >
                 {room}
               </Typography>
+
+              <Button
+                color={"error"}
+                onClick={handleCancel}
+                sx={{ marginTop: "1rem" }}
+              >
+                Cancel
+              </Button>
             </Box>
           ) : null}
         </Box>

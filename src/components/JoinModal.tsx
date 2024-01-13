@@ -14,11 +14,12 @@ interface JoinModalProps {
   onChange?: () => void;
   onJoin?: (room: string) => void;
   status?: string;
+  onCancel?: (room?: string) => void;
 }
 
 const style: SxProps = {
   position: "absolute" as "absolute",
-  top: "50%",
+  top: "40%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
@@ -30,7 +31,7 @@ const style: SxProps = {
 };
 
 const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
-  ({ onChange, onJoin, status }, ref) => {
+  ({ onChange, onJoin, status, onCancel }, ref) => {
     const [open, setOpen] = useState(false);
     const [otp, setOtp] = useState("");
     const handleOpen = () => setOpen(true);
@@ -38,6 +39,11 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
 
     const handleChange = (newValue: string) => {
       setOtp(newValue);
+    };
+
+    const handleCancel = () => {
+      onCancel?.();
+      handleClose();
     };
 
     useImperativeHandle(
@@ -81,7 +87,12 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             display={"flex"}
             alignItems={"center"}
             justifyContent={"center"}
+            // flexDirection={"column"}
           >
+            <Button color={"error"} onClick={handleCancel} sx={{ mx: "2rem" }}>
+              Cancel
+            </Button>
+
             <Button
               disabled={otp.length !== 6}
               onClick={() => {
