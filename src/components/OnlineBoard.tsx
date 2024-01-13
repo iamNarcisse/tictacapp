@@ -142,10 +142,10 @@ const OnlineBoard: React.FC = () => {
   };
 
   useEffect(() => {
-    connect();
+    // connect();
     init();
     return () => {
-      disconnect();
+      // disconnect();
     };
   }, []);
 

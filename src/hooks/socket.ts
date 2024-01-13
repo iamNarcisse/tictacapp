@@ -16,14 +16,6 @@ const useSocket = () => {
       setIsConnected(false);
     }
 
-    function onFooEvent(value: any) {
-      setFooEvents((previous: any) => [...previous, value]);
-    }
-
-    function onRoomEvent(value: any) {
-      setRoomEvents((previous: any) => [...previous, value]);
-    }
-
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
