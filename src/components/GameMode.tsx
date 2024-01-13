@@ -12,11 +12,11 @@ const GameMode: FC<GameModeProps> = () => {
   const { onSetGameMode } = useApp();
   const config = [
     {
-      title: "1 Player",
+      title: "Play Solo",
       key: "single",
     },
     {
-      title: "2 Player",
+      title: "Play with a friend",
       key: "double",
     },
   ];
@@ -29,7 +29,7 @@ const GameMode: FC<GameModeProps> = () => {
 
   return (
     <Box px={"10rem"} py={"4rem"}>
-      <h1>Game Mode </h1>
+      <h1>Tic Tac Toe </h1>
       <Stack spacing={2} my={"3rem"}>
         {config.map((item) => {
           return (
@@ -39,6 +39,7 @@ const GameMode: FC<GameModeProps> = () => {
               component={Button}
               color={"white"}
               sx={styles}
+              textTransform={"capitalize"}
               onClick={() => onSetGameMode(item.key as GameMode)}
             >
               {item.title}

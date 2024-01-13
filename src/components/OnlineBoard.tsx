@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { OBoard } from "./Board";
 import InviteModal, { IModalRef } from "./InviteModal";
 import JoinModal, { IJoinModalRef } from "./JoinModal";
+import BoardFooterControls from "./BoardFooterControls";
 
 const OnlineBoard: React.FC = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -13,7 +14,7 @@ const OnlineBoard: React.FC = () => {
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
   const { isConnected, socket, connect, disconnect } = useSocket();
-  const { gameOption } = useApp();
+  const { gameOption, onSetGameMode, onSetOption } = useApp();
   const [room, setRoom] = useState();
   const [status, setStatus] = useState<string | undefined>();
   const inviteModalRef = useRef<IModalRef>(null);
@@ -141,11 +142,22 @@ const OnlineBoard: React.FC = () => {
     return true;
   };
 
+  const onReset = () => {
+    // Disabled by default
+    // setHistory([Array(9).fill(null)]);
+    // setCurrentMove(0);
+  };
+
+  const goBackHome = () => {
+    onSetGameMode(undefined);
+    onSetOption(undefined);
+  };
+
   useEffect(() => {
-    // connect();
+    connect();
     init();
     return () => {
-      // disconnect();
+      disconnect();
     };
   }, []);
 
@@ -173,6 +185,12 @@ const OnlineBoard: React.FC = () => {
         squares={currentSquares}
         onPlay={handlePlay}
         currentMove={currentMove}
+      />
+
+      <BoardFooterControls
+        hideReset
+        onBackHome={goBackHome}
+        onReset={onReset}
       />
       <InviteModal
         joinStatus={status}

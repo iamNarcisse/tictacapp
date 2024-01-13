@@ -1,15 +1,15 @@
 import { GameMode, GameOption } from "@/types";
 import { createContext, memo, useContext, useState } from "react";
 interface IAppContext {
-  onSetGameMode: (gameMode: GameMode) => void;
+  onSetGameMode: (gameMode?: GameMode) => void;
   gameMode?: GameMode | undefined;
   gameOption?: GameOption | undefined;
-  onSetOption: (option: GameOption) => void;
+  onSetOption: (option?: GameOption) => void;
 }
 
 const AppContext = createContext<IAppContext>({
-  onSetGameMode: (gameMode: GameMode) => {},
-  onSetOption: (gameMode: GameOption) => {},
+  onSetGameMode: (gameMode?: GameMode) => {},
+  onSetOption: (gameMode?: GameOption) => {},
 });
 
 export const useApp = () => useContext(AppContext);
@@ -23,7 +23,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [gameMode, setGameMode] = useState<GameMode>();
   const [option, setOption] = useState<GameOption | undefined>();
 
-  const onSetGameMode = (mode: GameMode) => {
+  const onSetGameMode = (mode?: GameMode) => {
     setGameMode(mode);
   };
 
