@@ -1,10 +1,11 @@
-import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 
-import { FC } from "react";
-import { Button, SxProps } from "@mui/material";
 import { useApp } from "@/provider/app";
 import { GameMode } from "@/types";
+import { SxProps, Typography } from "@mui/material";
+import { FC } from "react";
+import CustomButton from "./Button";
 
 type GameModeProps = {};
 
@@ -23,27 +24,27 @@ const GameMode: FC<GameModeProps> = () => {
 
   const styles: SxProps = {
     ":hover": {
-      border: "1px solid #2de7ba",
+      // border: "1px solid #2de7ba",
     },
   };
 
   return (
-    <Box px={"10rem"} py={"4rem"}>
-      <h1>Tic Tac Toe </h1>
-      <Stack spacing={2} my={"3rem"}>
+    <Box py={"4rem"} width={"30rem"} justifyContent={"center"}>
+      <Typography textAlign={"center"} fontSize={"3rem"} variant="h1">
+        Tic Tac Toe
+      </Typography>
+      <Stack spacing={3} my={"3rem"} px={"4rem"} width={"100%"}>
         {config.map((item) => {
           return (
-            <Box
+            <CustomButton
               key={item.key}
-              border="1px solid gray"
-              component={Button}
-              color={"white"}
+              title={item.title}
+              type={item.key === "single" ? "primary" : "secondary"}
               sx={styles}
-              textTransform={"capitalize"}
               onClick={() => onSetGameMode(item.key as GameMode)}
             >
               {item.title}
-            </Box>
+            </CustomButton>
           );
         })}
       </Stack>
