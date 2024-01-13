@@ -20,7 +20,7 @@ const Square: React.FC<SquareProps> = ({ value, onClick, isSelf }) => {
       component={Button}
       borderRadius={"0.5rem"}
       fontWeight={"bold"}
-      color={isSelf ? "#2de7ba" : "white"}
+      color={isSelf ? "#2de7ba" : "#FF9B8D"}
       // border={"1px solid #2de7ba"}
       margin={"0.5rem"}
       fontSize={"2.5rem"}
