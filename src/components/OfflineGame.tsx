@@ -3,11 +3,12 @@ import Board from "@components/Board";
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import BoardFooterControls from "./BoardFooterControls";
+import { Button } from "@mui/material";
 
 const OfflineGame: React.FC = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const { onSetGameMode } = useApp();
+  const { onSetGameMode, openToast } = useApp();
 
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];

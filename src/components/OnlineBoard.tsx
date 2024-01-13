@@ -14,7 +14,7 @@ const OnlineBoard: React.FC = () => {
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
   const { isConnected, socket, connect, disconnect } = useSocket();
-  const { gameOption, onSetGameMode, onSetOption } = useApp();
+  const { gameOption, onSetGameMode, onSetOption, openToast } = useApp();
   const [room, setRoom] = useState();
   const [status, setStatus] = useState<string | undefined>();
   const inviteModalRef = useRef<IModalRef>(null);
@@ -90,9 +90,9 @@ const OnlineBoard: React.FC = () => {
       const resource = await response.json();
 
       if (response.status !== 200 && response.status !== 201) {
+        openToast(resource?.message || "", "error");
         throw new Error(resource.message);
       }
-
       console.log(resource, "resource AM HERE ==>");
       socket.emit("joinRoom", payload);
     } catch (error) {

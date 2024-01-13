@@ -9,6 +9,7 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Button, SxProps } from "@mui/material";
+import { useApp } from "@/provider/app";
 
 export interface IModalRef {
   open: () => void;
@@ -41,6 +42,7 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const { openToast } = useApp();
 
     const handleCancel = () => {
       onCancel?.();
@@ -68,6 +70,7 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
       }
       try {
         await navigator.clipboard.writeText(copyMe);
+        openToast?.("Copied to clipboard.", "success");
       } catch (err) {
         console.log(err);
       }
@@ -115,7 +118,7 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
                 variant="h6"
                 component="h2"
               >
-                Share this code
+                Share this code to your friend
               </Typography>
 
               <Typography
