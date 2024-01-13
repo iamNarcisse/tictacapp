@@ -182,7 +182,7 @@ const OnlineBoard: React.FC = () => {
   return (
     <Box>
       <Box display={"flex"} justifyContent={"center"} onClick={() => {}}>
-        {isConnected ? "Connected" : "Disconnected"}
+        {/* {isConnected ? "Connected" : "Disconnected"} */}
       </Box>
       <OBoard
         xIsNext={xIsNext}
