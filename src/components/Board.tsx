@@ -2,8 +2,8 @@ import Square from "@components/Square";
 import { Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import { memo } from "react";
-import clickMp3 from "./click.mp3";
 import useSound from "use-sound";
+import clickMp3 from "./click.mp3";
 
 type BoardProps = {
   squares: Array<any>;
@@ -35,8 +35,9 @@ const calculateWinner = (squares: Array<any>) => {
   return null;
 };
 
-const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay, onReset }) => {
+const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay }) => {
   const [playSound] = useSound(clickMp3);
+
   const handleClick = (index: number) => {
     if (calculateWinner(squares) || squares[index]) {
       return;
@@ -47,15 +48,23 @@ const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay, onReset }) => {
     } else {
       nextSquares[index] = "O";
     }
-    onPlay(nextSquares);
 
+    onPlay(nextSquares);
     playSound();
   };
 
   const winner = calculateWinner(squares);
+
+  const isDraw = () => {
+    const isFilled = squares.filter((item) => item).length === 9;
+    return !winner && isFilled;
+  };
+
   let status;
   if (winner) {
     status = "Winner: " + winner;
+  } else if (isDraw()) {
+    status = "It's a tie!";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -124,9 +133,17 @@ export const OBoard: React.FC<BoardProps> = ({
   };
 
   const winner = calculateWinner(squares);
+
+  const isDraw = () => {
+    const isFilled = squares.filter((item) => item).length === 9;
+    return !winner && isFilled;
+  };
+
   let status;
   if (winner) {
     status = "Winner: " + winner;
+  } else if (isDraw()) {
+    status = "It's a tie!";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
