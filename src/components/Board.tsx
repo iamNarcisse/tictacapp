@@ -2,6 +2,8 @@ import Square from "@components/Square";
 import { Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 import { memo } from "react";
+import clickMp3 from "./click.mp3";
+import useSound from "use-sound";
 
 type BoardProps = {
   squares: Array<any>;
@@ -34,6 +36,7 @@ const calculateWinner = (squares: Array<any>) => {
 };
 
 const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay, onReset }) => {
+  const [playSound] = useSound(clickMp3);
   const handleClick = (index: number) => {
     if (calculateWinner(squares) || squares[index]) {
       return;
@@ -45,6 +48,8 @@ const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay, onReset }) => {
       nextSquares[index] = "O";
     }
     onPlay(nextSquares);
+
+    playSound();
   };
 
   const winner = calculateWinner(squares);
@@ -99,6 +104,8 @@ export const OBoard: React.FC<BoardProps> = ({
   onPlay,
   canPlay,
 }) => {
+  const [playSound] = useSound(clickMp3);
+
   const handleClick = (index: number) => {
     if (!canPlay) return;
 
@@ -112,6 +119,8 @@ export const OBoard: React.FC<BoardProps> = ({
       nextSquares[index] = "O";
     }
     onPlay(nextSquares);
+
+    playSound();
   };
 
   const winner = calculateWinner(squares);

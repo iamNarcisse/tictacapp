@@ -17,12 +17,15 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "socket.io-client": "^4.7.3"
+    "socket.io-client": "^4.7.3",
+    "use-sound": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "typescript": "^5"
+    "file-loader": "^6.2.0",
+    "typescript": "^5",
+    "url-loader": "^4.1.1"
   }
 }
