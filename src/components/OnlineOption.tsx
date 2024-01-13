@@ -33,7 +33,7 @@ const OnlineGameOptions: FC<GameModeProps> = () => {
       {!option ? (
         <Box width={"30rem"}>
           <Typography variant="h1" textAlign={"center"} fontSize={"3rem"}>
-            Play Online{" "}
+            Play Online
           </Typography>
           <Stack spacing={3} my={"3rem"} width={"100%"}>
             {config.map((item) => {
