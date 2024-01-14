@@ -3,6 +3,11 @@
 Click [here](https://tictacapp.vercel.app) for live demo.
 
 
+## Features
+- Play Solo 
+- Play with Friend (Realtime)
+
+
 ## Steps to Run Locally
 
 - Clone project.
