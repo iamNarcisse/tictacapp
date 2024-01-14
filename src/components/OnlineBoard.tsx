@@ -42,6 +42,7 @@ const OnlineBoard: React.FC = () => {
   const [guestID, setGuestID] = useState<string | undefined>();
   const [currentPlayer, setCurrentPlayer] = useState<string | undefined>();
   const [count, setCounter] = useState(maxPlayTime);
+  const [joining, setJoining] = useState(false);
 
   const [elaspedTime, setElaspedTime] = useState<string | undefined>();
 
@@ -104,6 +105,7 @@ const OnlineBoard: React.FC = () => {
         room,
       };
 
+      setJoining(true);
       const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/board/join`;
       const response = await fetch(url, {
         method: "POST",
@@ -125,6 +127,8 @@ const OnlineBoard: React.FC = () => {
       socket.emit("joinRoom", payload);
     } catch (error) {
       console.log(error, "REQUEST ERROR");
+    } finally {
+      setJoining(false);
     }
   };
 
@@ -220,13 +224,13 @@ const OnlineBoard: React.FC = () => {
     let timer: NodeJS.Timer | number = 0;
 
     if (count === 0) {
+      clearInterval(timer as any);
       return;
     }
 
     timer = setInterval(() => {
       setCounter((prevCount) => {
         if (prevCount === 0) {
-          // onElapsed();
           clearInterval(timer as any);
           return prevCount;
         }
@@ -257,6 +261,9 @@ const OnlineBoard: React.FC = () => {
           squares={currentSquares}
           onPlay={handlePlay}
           currentMove={currentMove}
+          onCallBack={() => {
+            setCounter(0);
+          }}
         />
 
         <BoardFooterControls
@@ -280,6 +287,7 @@ const OnlineBoard: React.FC = () => {
         status={status}
         onJoin={onJoin}
         onCancel={onCancel}
+        loading={joining}
       />
     </Box>
   );

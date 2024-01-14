@@ -12,6 +12,7 @@ type BoardProps = {
   currentMove?: number;
   canPlay?: boolean;
   onReset?: (value?: any) => void;
+  onCallBack?: (value?: any) => void;
 };
 
 const lines = [
@@ -148,6 +149,7 @@ export const OBoard: React.FC<BoardProps> = ({
   squares,
   onPlay,
   canPlay,
+  onCallBack,
 }) => {
   const [playSound] = useSound(clickMp3);
 
@@ -178,8 +180,10 @@ export const OBoard: React.FC<BoardProps> = ({
   let status;
   if (winner) {
     status = "Winner: " + winner;
+    onCallBack?.();
   } else if (isDraw()) {
     status = "It's a tie!";
+    onCallBack?.();
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
