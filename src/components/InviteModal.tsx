@@ -27,7 +27,7 @@ interface InviteModalProps {
 const style: SxProps = {
   position: "absolute" as "absolute",
   top: "30%",
-  left: "50%",
+  left: "48%",
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",

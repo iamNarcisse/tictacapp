@@ -7,6 +7,26 @@ import { OBoard } from "./Board";
 import InviteModal, { IModalRef } from "./InviteModal";
 import JoinModal, { IJoinModalRef } from "./JoinModal";
 import BoardFooterControls from "./BoardFooterControls";
+import Counter from "./Counter";
+import dayjs from "dayjs";
+
+const maxPlayTime = 59; // 60 seconds
+
+const getTimeTaken = (counter: number, elaspedTime?: string) => {
+  const timeTaken = maxPlayTime - counter;
+
+  if (timeTaken < maxPlayTime) {
+    return timeTaken;
+  }
+
+  //Time has elapsed
+  console.log("REACHED HERE ===>");
+  console.log("elaspedTime  ===>", elaspedTime);
+  const then = dayjs(elaspedTime);
+  const diff = dayjs().diff(then, "second");
+
+  return diff + maxPlayTime;
+};
 
 const OnlineBoard: React.FC = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -21,6 +41,9 @@ const OnlineBoard: React.FC = () => {
   const joinModalRef = useRef<IJoinModalRef>(null);
   const [guestID, setGuestID] = useState<string | undefined>();
   const [currentPlayer, setCurrentPlayer] = useState<string | undefined>();
+  const [count, setCounter] = useState(maxPlayTime);
+
+  const [elaspedTime, setElaspedTime] = useState<string | undefined>();
 
   function handlePlay(nextSquares: any) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -28,12 +51,17 @@ const OnlineBoard: React.FC = () => {
     setCurrentMove(nextHistory.length - 1);
     setCurrentPlayer(socket.id);
 
+    // Timeer oo
+    setCounter(maxPlayTime);
+    setElaspedTime(undefined);
+
     const move: Move = {
       currentMove: nextHistory.length - 1,
       nextHistory,
       timeOfMove: Date.now(),
       socketID: socket.id,
       currentPlayerID: socket.id,
+      timeTaken: getTimeTaken(count, elaspedTime), // in seconds
     };
 
     socket.emit("playRoom", move);
@@ -130,6 +158,8 @@ const OnlineBoard: React.FC = () => {
     setHistory(nextHistory);
     setCurrentMove(currentMove);
     setCurrentPlayer(doc.currentPlayerID);
+    setCounter(maxPlayTime);
+    setElaspedTime(undefined);
   }
 
   const getCanPlay = () => {
@@ -146,6 +176,9 @@ const OnlineBoard: React.FC = () => {
     // Disabled by default
     // setHistory([Array(9).fill(null)]);
     // setCurrentMove(0);
+    // Timer
+    // setCounter(maxPlayTime);
+    // setElaspedTime(undefined);
   };
 
   const goBackHome = () => {
@@ -179,24 +212,62 @@ const OnlineBoard: React.FC = () => {
     };
   }, []);
 
-  return (
-    <Box>
-      <Box display={"flex"} justifyContent={"center"} onClick={() => {}}>
-        {/* {isConnected ? "Connected" : "Disconnected"} */}
-      </Box>
-      <OBoard
-        xIsNext={xIsNext}
-        canPlay={getCanPlay()}
-        squares={currentSquares}
-        onPlay={handlePlay}
-        currentMove={currentMove}
-      />
+  useEffect(() => {
+    if (status !== "joined") {
+      return;
+    }
 
-      <BoardFooterControls
-        hideReset
-        onBackHome={goBackHome}
-        onReset={onReset}
-      />
+    let timer: NodeJS.Timer | number = 0;
+
+    if (count === 0) {
+      return;
+    }
+
+    timer = setInterval(() => {
+      setCounter((prevCount) => {
+        if (prevCount === 0) {
+          // onElapsed();
+          clearInterval(timer as any);
+          return prevCount;
+        }
+
+        return prevCount - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer as any);
+    };
+  }, [count, status]);
+
+  return (
+    <Box
+      position={"relative"}
+      display={"flex"}
+      flexDirection={"row"}
+      alignItems={"center"}
+    >
+      <Box>
+        <Box display={"flex"} justifyContent={"center"} onClick={() => {}}>
+          {/* {isConnected ? "Connected" : "Disconnected"} */}
+        </Box>
+        <OBoard
+          xIsNext={xIsNext}
+          canPlay={getCanPlay()}
+          squares={currentSquares}
+          onPlay={handlePlay}
+          currentMove={currentMove}
+        />
+
+        <BoardFooterControls
+          hideReset
+          onBackHome={goBackHome}
+          onReset={onReset}
+        />
+      </Box>
+
+      <Counter xIsNext={xIsNext} counter={count} onElapsed={setElaspedTime} />
+
       <InviteModal
         joinStatus={status}
         onInvite={onInvite}
