@@ -8,4 +8,5 @@ export type Move = {
   timeOfMove: number; // timestamp
   socketID?: string;
   currentPlayerID?: string;
+  timeTaken?: number;
 };

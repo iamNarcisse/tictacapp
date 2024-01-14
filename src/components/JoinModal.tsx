@@ -20,7 +20,7 @@ interface JoinModalProps {
 const style: SxProps = {
   position: "absolute" as "absolute",
   top: "40%",
-  left: "50%",
+  left: "47%",
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
