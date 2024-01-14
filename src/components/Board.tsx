@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import { memo } from "react";
 import useSound from "use-sound";
 import clickMp3 from "./click.mp3";
+import winMp3 from "./win.mp3";
+import drawMp3 from "./draw.mp3";
 
 type BoardProps = {
   squares: Array<any>;
@@ -38,6 +40,8 @@ const calculateWinner = (squares: Array<any>) => {
 
 const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay }) => {
   const [playSound] = useSound(clickMp3);
+  const [playWinSound] = useSound(winMp3);
+  const [playDrawSound] = useSound(drawMp3);
 
   const handleClick = (index: number) => {
     if (calculateWinner(squares) || squares[index]) {
@@ -64,8 +68,10 @@ const Board: React.FC<BoardProps> = ({ xIsNext, squares, onPlay }) => {
   let status;
   if (winner) {
     status = "Winner: " + winner;
+    playWinSound();
   } else if (isDraw()) {
     status = "It's a tie!";
+    playDrawSound();
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -152,6 +158,8 @@ export const OBoard: React.FC<BoardProps> = ({
   onCallBack,
 }) => {
   const [playSound] = useSound(clickMp3);
+  const [playWinSound] = useSound(winMp3);
+  const [playDrawSound] = useSound(drawMp3);
 
   const handleClick = (index: number) => {
     if (!canPlay) return;
@@ -180,9 +188,11 @@ export const OBoard: React.FC<BoardProps> = ({
   let status;
   if (winner) {
     status = "Winner: " + winner;
+    playWinSound();
     onCallBack?.();
   } else if (isDraw()) {
     status = "It's a tie!";
+    playDrawSound();
     onCallBack?.();
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
