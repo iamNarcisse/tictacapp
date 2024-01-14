@@ -95,7 +95,7 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             </Button>
 
             <Button
-              disabled={otp.length !== 6 || loading}
+              disabled={otp.length !== 6}
               onClick={() => {
                 onJoin?.(otp);
               }}

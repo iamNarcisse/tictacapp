@@ -33,7 +33,7 @@ const useSocket = () => {
     socket.disconnect();
   }
 
-  console.log("ROOM EVENT", roomEvents);
+  // console.log("ROOM EVENT", roomEvents);
 
   return {
     isConnected: isConnected,

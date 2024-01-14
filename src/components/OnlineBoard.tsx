@@ -2,7 +2,7 @@ import useSocket from "@/hooks/socket";
 import { useApp } from "@/provider/app";
 import { Move } from "@/types";
 import Box from "@mui/material/Box";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { OBoard } from "./Board";
 import InviteModal, { IModalRef } from "./InviteModal";
 import JoinModal, { IJoinModalRef } from "./JoinModal";
@@ -73,8 +73,8 @@ const OnlineBoard: React.FC = () => {
       case "invite":
         if (!status) {
           inviteModalRef.current?.open();
+          onInvite();
         }
-
         break;
       case "join":
         console.log("status");
@@ -86,31 +86,49 @@ const OnlineBoard: React.FC = () => {
   }
 
   async function onInvite() {
-    // console.log("isConnected", isConnected);
     try {
-      const socketID = socket.id;
+      const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/board`;
+      setJoining(true);
+
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          type: "normal",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const resource = await response.json();
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(resource.message);
+      }
+
       const payload = {
-        id: "1234",
-        socketID,
+        sessionID: resource.sessionID,
+        room: resource.room,
       };
 
-      socket.emit("createRoom", payload);
       // Create room
-    } catch (error) {}
+      socket.emit("createRoom", payload);
+    } catch (error: any) {
+      openToast(
+        error?.message || "Unable to create invite. Try again",
+        "error"
+      );
+    } finally {
+      setJoining(false);
+    }
   }
 
   const onJoin = async (room: string) => {
     try {
-      const payload = {
-        room,
-      };
-
       setJoining(true);
       const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/board/join`;
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
-          socketID: socket.id,
           room,
         }),
         headers: {
@@ -120,12 +138,19 @@ const OnlineBoard: React.FC = () => {
       const resource = await response.json();
 
       if (response.status !== 200 && response.status !== 201) {
-        openToast(resource?.message || "", "error");
         throw new Error(resource.message);
       }
-      console.log(resource, "resource AM HERE ==>");
+
+      const payload = {
+        room,
+        sessionID: resource.sessionID,
+      };
+
+      console.log(resource, "JOIN RESOURCE");
+
       socket.emit("joinRoom", payload);
-    } catch (error) {
+    } catch (error: any) {
+      openToast(error?.message || "Unable to join. Try again", "error");
       console.log(error, "REQUEST ERROR");
     } finally {
       setJoining(false);
@@ -133,8 +158,8 @@ const OnlineBoard: React.FC = () => {
   };
 
   function onRoomieJoined(doc: any) {
-    console.log("REACHED HERE  ===>");
-    console.log("onRoomJoined", doc);
+    console.log("Roomie Joined  ===>");
+    // console.log("onRoomJoined", doc);
     const socketID = socket.id;
     inviteModalRef.current?.close();
     joinModalRef.current?.close();
@@ -144,12 +169,12 @@ const OnlineBoard: React.FC = () => {
   }
 
   function onRoomCreated(doc: any) {
+    console.log("ROOM CREATED ==>");
     const socketID = socket.id;
-    console.log("SOCKET ID ===>", socketID);
-    console.log("CREATOR DOc ===>", doc);
+
     if (socketID === doc.socketID) {
       // Creator
-      console.log("onRoomCreated  ===>");
+
       setStatus("waiting");
       setRoom(doc.room);
     }
@@ -252,9 +277,6 @@ const OnlineBoard: React.FC = () => {
       alignItems={"center"}
     >
       <Box>
-        <Box display={"flex"} justifyContent={"center"} onClick={() => {}}>
-          {/* {isConnected ? "Connected" : "Disconnected"} */}
-        </Box>
         <OBoard
           xIsNext={xIsNext}
           canPlay={getCanPlay()}
@@ -293,4 +315,4 @@ const OnlineBoard: React.FC = () => {
   );
 };
 
-export default OnlineBoard;
+export default memo(OnlineBoard);

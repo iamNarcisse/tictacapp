@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   transpilePackages: ["mui-one-time-password-input"],
   webpack(config, options) {
     const { isServer } = options;
