@@ -15,6 +15,7 @@ interface JoinModalProps {
   onJoin?: (room: string) => void;
   status?: string;
   onCancel?: (room?: string) => void;
+  loading?: boolean;
 }
 
 const style: SxProps = {
@@ -31,7 +32,7 @@ const style: SxProps = {
 };
 
 const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
-  ({ onChange, onJoin, status, onCancel }, ref) => {
+  ({ onChange, onJoin, status, onCancel, loading }, ref) => {
     const [open, setOpen] = useState(false);
     const [otp, setOtp] = useState("");
     const handleOpen = () => setOpen(true);

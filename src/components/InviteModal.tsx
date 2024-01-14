@@ -1,15 +1,9 @@
-import {
-  forwardRef,
-  memo,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { useApp } from "@/provider/app";
+import { Button, SxProps } from "@mui/material";
+import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import { Button, SxProps } from "@mui/material";
-import { useApp } from "@/provider/app";
+import { forwardRef, memo, useImperativeHandle, useState } from "react";
 
 export interface IModalRef {
   open: () => void;
@@ -57,12 +51,6 @@ const InviteModal = forwardRef<IModalRef, InviteModalProps>(
       }),
       []
     );
-
-    useEffect(() => {
-      if (!joinStatus) {
-        onInvite?.();
-      }
-    }, []);
 
     const copyToClipBoard = async (copyMe?: string) => {
       if (!copyMe) {
