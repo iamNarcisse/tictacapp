@@ -80,7 +80,12 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             sx={{ mt: 2 }}
             textAlign={"center"}
           >
-            <MuiOtpInput value={otp} length={6} onChange={handleChange} />
+            <MuiOtpInput
+              value={otp}
+              length={6}
+              onChange={handleChange}
+              TextFieldsProps={{ disabled: loading }}
+            />
           </Typography>
 
           <Box
@@ -95,8 +100,10 @@ const JoinModal = forwardRef<IJoinModalRef, JoinModalProps>(
             </Button>
 
             <Button
-              disabled={otp.length !== 6}
+              disabled={otp.length !== 6 || loading}
               onClick={() => {
+                if (loading) return;
+
                 onJoin?.(otp);
               }}
             >
