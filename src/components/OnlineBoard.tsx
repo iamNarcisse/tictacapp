@@ -159,7 +159,6 @@ const OnlineBoard: React.FC = () => {
 
   function onRoomieJoined(doc: any) {
     console.log("Roomie Joined  ===>");
-    // console.log("onRoomJoined", doc);
     const socketID = socket.id;
     inviteModalRef.current?.close();
     joinModalRef.current?.close();
