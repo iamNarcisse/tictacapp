@@ -10,3 +10,8 @@ export type Move = {
   currentPlayerID?: string;
   timeTaken?: number;
 };
+
+export type BoardCallbackParams = {
+  status: "win" | "draw";
+  winner_symbol?: "X" | "O";
+};

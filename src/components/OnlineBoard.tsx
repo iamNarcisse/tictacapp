@@ -1,6 +1,6 @@
 import useSocket from "@/hooks/socket";
 import { useApp } from "@/provider/app";
-import { Move } from "@/types";
+import { BoardCallbackParams, Move } from "@/types";
 import Box from "@mui/material/Box";
 import { memo, useEffect, useRef, useState } from "react";
 import { OBoard } from "./Board";
@@ -43,8 +43,8 @@ const OnlineBoard: React.FC = () => {
   const [currentPlayer, setCurrentPlayer] = useState<string | undefined>();
   const [count, setCounter] = useState(maxPlayTime);
   const [joining, setJoining] = useState(false);
-
   const [elaspedTime, setElaspedTime] = useState<string | undefined>();
+  const [sessionID, setSessionID] = useState<string | undefined>();
 
   function handlePlay(nextSquares: any) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -112,6 +112,8 @@ const OnlineBoard: React.FC = () => {
 
       // Create room
       socket.emit("createRoom", payload);
+
+      setSessionID(resource.sessionID);
     } catch (error: any) {
       openToast(
         error?.message || "Unable to create invite. Try again",
@@ -145,10 +147,8 @@ const OnlineBoard: React.FC = () => {
         room,
         sessionID: resource.sessionID,
       };
-
-      console.log(resource, "JOIN RESOURCE");
-
       socket.emit("joinRoom", payload);
+      setSessionID(resource.sessionID);
     } catch (error: any) {
       openToast(error?.message || "Unable to join. Try again", "error");
       console.log(error, "REQUEST ERROR");
@@ -220,6 +220,48 @@ const OnlineBoard: React.FC = () => {
     onSetOption(undefined);
   };
 
+  const onUpdateBoard = async (params?: BoardCallbackParams) => {
+    try {
+      console.log("onUpdateBoard", params);
+
+      if (!params) return;
+
+      if (guestID === socket.id) {
+        // Only an admin is allowed to update the board
+        return;
+      }
+
+      setJoining(true);
+      const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/board/${room}`;
+
+      const data = {
+        room,
+        sessionID,
+        winner_symbol: params.winner_symbol || undefined,
+        status: params.status,
+      };
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const resource = await response.json();
+
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(resource.message);
+      }
+    } catch (error: any) {
+      openToast(error?.message || "Unable to join. Try again", "error");
+      console.log(error, "REQUEST ERROR");
+    } finally {
+      setJoining(false);
+    }
+  };
+
   useEffect(() => {
     connect();
     init();
@@ -283,8 +325,9 @@ const OnlineBoard: React.FC = () => {
           squares={currentSquares}
           onPlay={handlePlay}
           currentMove={currentMove}
-          onCallBack={() => {
+          onCallBack={(params) => {
             setCounter(0);
+            onUpdateBoard(params);
           }}
         />
 

@@ -6,6 +6,7 @@ import useSound from "use-sound";
 import clickMp3 from "./click.mp3";
 import winMp3 from "./win.mp3";
 import drawMp3 from "./draw.mp3";
+import { BoardCallbackParams } from "@/types";
 
 type BoardProps = {
   squares: Array<any>;
@@ -14,7 +15,7 @@ type BoardProps = {
   currentMove?: number;
   canPlay?: boolean;
   onReset?: (value?: any) => void;
-  onCallBack?: (value?: any) => void;
+  onCallBack?: (value?: BoardCallbackParams) => void;
 };
 
 const lines = [
@@ -189,11 +190,11 @@ export const OBoard: React.FC<BoardProps> = ({
   if (winner) {
     status = "Winner: " + winner;
     playWinSound();
-    onCallBack?.();
+    onCallBack?.({ status: "win", winner_symbol: winner });
   } else if (isDraw()) {
     status = "It's a tie!";
     playDrawSound();
-    onCallBack?.();
+    onCallBack?.({ status: "draw", winner_symbol: winner });
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
